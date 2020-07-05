@@ -12,20 +12,51 @@ author: Mohamed Saied
 
 <div>
 
-- [Radar Specifications](#2)
-- [User Defined Range and Velocity of target](#3)
-- [FMCW Waveform Generation](#4)
-- [Signal generation and Moving Target simulation](#5)
-- [RANGE MEASUREMENT](#6)
-- [RANGE DOPPLER RESPONSE](#7)
-- [CFAR implementation](#8)
+-   [Implementation of CFAR Steps](#2)
+-   [Selection of Training, Guard cells and offsets](#2)
+-   [Steps taken to supress the non-thresholded cells at the edge.](#2)
+-   [Radar Specifications](#2)
+-   [User Defined Range and Velocity of target](#3)
+-   [FMCW Waveform Generation](#4)
+-   [Signal generation and Moving Target simulation](#5)
+-   [RANGE MEASUREMENT](#6)
+-   [RANGE DOPPLER RESPONSE](#7)
+-   [CFAR implementation](#8)
 
 </div>
 
-```{.codeinput}
+``` {.codeinput}
 clear all;
 clc;
 ```
+Implementation of CFAR Steps {#2}
+----------------------------------------------------
+1-Determine the number of cells in each Dimension Tr and Td.Similary pick
+the Number of Guard cells Gr and Gd.
+2-slide the cell under test CUT across complete cell matrix.
+3-for every iteration sum the signal level within all training cells,to sum convert from
+logarithmic to linear using dbpow2 function.
+4-average the summed values for all the training cells used.After summing convert it back to logarithmic from
+linear using pow2db.
+5-Further add the offset to determine the threshold.
+6-Next , compare the signal under CUT against this threshold.
+7-if the CUT level > threshold then assign to 1 , else assign it to 0. 
+8-To keep the Map size as same as before CFAR equate all non-thresholded cells to 0.
+
+Selection of Training, Guard cells and offsets {#2}
+---------------------------------------------------------------------------
+-Number of training cells in range dimension (Tr)=10
+-Number of training cells in doppler dimension (Td)=8
+-Number of Guard cells in doppler dimension (Gr)=4
+-Number of Guard cells in doppler dimension (Gd)=4
+
+
+Steps taken to supress the non-thresholded cells at the edge {#2}
+-------------------------------------------------------------------------------------------------------
+The process above will generate a threshold block, which is smaller than the range Doppler Map as the 
+CUT can't be located at the edges of the matrix. Hence, few cells will not be thresholded. to keep 
+the map size same set those values to 0.
+Any cell that is neither 1 or 0 assign it to 0.
 
 ## Radar Specifications {#2}
 
